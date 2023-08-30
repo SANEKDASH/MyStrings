@@ -1,3 +1,9 @@
+#ifndef mystrings
+
+#define mystrings
+
+char *myStrStr(const char *str, const char *substr);
+
 int myPuts(const char *str);
 
 char *myStrchr(char *str, int ch);//
@@ -17,3 +23,5 @@ char *myFgets(char *str, size_t count, FILE *stream);
 char *myStrdup(const char *str);//
 
 ssize_t myGetline(char **ptr_line, size_t *n, FILE *stream);
+
+#endif

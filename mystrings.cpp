@@ -162,22 +162,23 @@ char *myStrdup(const char *str)
 ssize_t myGetline(char **ptr_line, size_t *n, FILE *stream)
 {
     CHECK(stream);
+    CHECK(ptr_line);
     CHECK(n);
 
-    if (!ptr_line)
+    if (*ptr_line == nullptr)
     {
-        *ptr_line = (char *) calloc(*n, sizeof(char));
+        *ptr_line = (char *) calloc(*n, sizeof(char));  // !!!!???? realloc(nullptr)
     }
 
     size_t i = 0;
 
     int c = 0;
 
-    while ((c = fgetc(stream)) != '\n')
+    while ((c = fgetc(stream)) != '\n' && ptr_line != nullptr)
     {
         if (c == EOF)
         {
-            return -1;
+            return EOF;
         }
         if (i < *n - 1)
         {
@@ -198,10 +199,28 @@ ssize_t myGetline(char **ptr_line, size_t *n, FILE *stream)
     *(*ptr_line + i) = '\0';
 
     return i;
-
-    //check len
 }
 
+char *myStrStr(const char *str, const char *substr)
+{
+    CHECK(str);
+    CHECK(substr);
 
-// str str
+    for (; *str != '\0'; ++str)
+    {
+        int j = 0;
+
+        for (; str[j] != '\0' && str[j] == substr[j]; ++j)
+        {
+            //do nothing
+        }
+
+        if (substr[j] == '\0')
+        {
+            return (char *) str;
+        }
+    }
+
+    return nullptr;
+}
 

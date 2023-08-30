@@ -43,8 +43,8 @@ size_t myStrlen(const char *str)
 
     size_t i = 0;
     for (; *(str + i) != '\0'; ++i)
-    { 
-        /* Do nothing */ 
+    {
+        /* Do nothing */
     }
 
     return i;
@@ -148,12 +148,12 @@ char *myStrdup(const char *str)
     CHECK(str);
 
     char *str_copy = (char*) calloc(myStrlen(str) + 1, sizeof(char));
-    
+
     if (str_copy == nullptr)
     {
         return nullptr;
-    } 
-    
+    }
+
     myStrcpy(str_copy, str);
 
     return str_copy;
@@ -165,13 +165,16 @@ ssize_t myGetline(char **ptr_line, size_t *n, FILE *stream)
     CHECK(ptr_line);
     CHECK(n);
 
-    *ptr_line = (char *) malloc(*n);  // !!!!???? realloc(nullptr)
+    if (*ptr_line == nullptr)
+    {
+        *ptr_line = (char *) calloc(*n, sizeof(char));  // !!!!???? realloc(nullptr)
+    }
 
     size_t i = 0;
 
     int c = 0;
 
-    while ((c = fgetc(stream)) != '\n')
+    while ((c = fgetc(stream)) != '\n' && ptr_line != nullptr)
     {
         if (c == EOF)
         {
@@ -196,10 +199,28 @@ ssize_t myGetline(char **ptr_line, size_t *n, FILE *stream)
     *(*ptr_line + i) = '\0';
 
     return i;
-
-    //check len
 }
 
-
-// str str 
+char *myStrStr(const char *str, const char *substr)
+{
+    CHECK(str);
+    CHECK(substr);
+    
+    char *
+    
+    for (int i = 0; *str != '\0'; ++i)
+    {
+        for (int j = 0; str[i] != '\0' && str[j] == substr[j]; ++j)
+        {
+            //do nothing
+        }
+        
+        if (substr[i] == '\0')
+        {
+            return str;
+        }
+    }
+    
+    return str;
+}
 

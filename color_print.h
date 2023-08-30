@@ -1,3 +1,7 @@
+#ifndef colorprint
+
+#define colorprint// header guard ?
+
 typedef enum
 {
     kDBlue = 1, //!< dark blue
@@ -15,4 +19,4 @@ void SetColor(Colors color_code);
 
 void ColorPrintf(Colors color_code, const char *fmt, ...);
 
-
+#endif
