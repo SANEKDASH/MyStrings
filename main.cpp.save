@@ -20,6 +20,8 @@ static bool TestMyStrncpy();
 static bool TestMyStrcat();
 static bool TestMyStrncat();
 static bool TestMyStrdup();
+static bool TestMyStrStr();
+static bool TestMyFgets();
 
 int main()
 {
@@ -45,26 +47,22 @@ int main()
 
     RUN_TEST(TestMyStrchr);
 
-    TestPrint TestMyStrlen);
+    RUN_TEST(TestMyStrlen);
 
-    TestPrint("MyStrCpy", TestMyStrcpy());
+    RUN_TEST(TestMyStrcpy);
 
-    TestPrint("MyStrNCpy", TestMyStrncpy());
+    RUN_TEST(TestMyStrncpy);
 
-    TestPrint("MyStrCat", TestMyStrcat());
+    RUN_TEST(TestMyStrcat);
 
-    TestPrint("MyStrNCat", TestMyStrncat());
+    RUN_TEST(TestMyStrncat);
 
-    TestPrint("MyStrDup", TestMyStrdup());
+    RUN_TEST(TestMyStrdup);
 
-    /*char *str = nullptr;
+    TestMyStrStr();
 
-    size_t n = 10;
+    RUN_TEST(TestMyFgets);
 
-    myGetline(&str, &n, stdin);
-
-    printf("%s", str);
-           */
     return 0;
 }
 
@@ -72,11 +70,11 @@ static void TestPrint(const char *func_name, bool expr)
 {
     if (expr)
     {
-        ColorPrintf(kGreen,"#/ %s : succeded.\n", func_name);
+        ColorPrintf(kGreen,"#/ %-15s : succeded.\n", func_name);
     }
     else
     {
-        ColorPrintf(kRed, "#/ %s : fault.\n", func_name);
+        ColorPrintf(kRed, "#/ %-15s : fault.\n", func_name);
     }
     return;
 }
@@ -137,4 +135,79 @@ static bool TestMyStrdup()
     return (strcmp(myStrdup("Ded Inside"),
                    strdup(  "Ded Inside")) == 0);
 }
+
+static bool TestMyStrStr()
+{
+    int i = 0;
+    ColorPrintf(kGold, "#/ TestMyStr:\n{\n");
+
+    if(strstr("aboba", "bo") == myStrStr("aboba", "bo"))
+    {
+        ColorPrintf(kGreen, "\ttest1 : success.\n");
+        ++i;
+    }
+    else
+    {
+        ColorPrintf(kRed, "\ttest1 : fault.\n");
+    }
+
+    if(strstr("Ded Inside 32@ru", "32") == myStrStr("Ded Inside 32@ru", "32"))
+    {
+        ColorPrintf(kGreen, "\ttest2 : success.\n");
+        ++i;
+    }
+    else
+    {
+        ColorPrintf(kRed, "\ttest2 : fault.\n");
+    }
+
+    if(strstr("Ded Inside 31@ru", "32") == myStrStr("Ded Inside 31@ru", "32"))
+    {
+        ColorPrintf(kGreen, "\ttest3 : success.\n");
+        ++i;
+    }
+    else
+    {
+        ColorPrintf(kRed, "\ttest3 : fault.\n");
+    }
+
+    ColorPrintf(kGold, "}\n");
+
+    if (i == 3)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+static bool TestMyFgets()
+{
+    FILE *ptr_test_file = fopen("test.txt", "w");
+
+    char *str = "askdjaksd 12 123 askjdla";
+
+    char s1[100] = {0};
+    char s2[100] = {0};
+
+    fwrite(str, 1, strlen(str) + 1, ptr_test_file);
+
+    fclose(ptr_test_file);
+
+    ptr_test_file = fopen("test.txt", "r");
+
+    myFgets(s1, sizeof(s1), ptr_test_file);
+
+    fclose(ptr_test_file);
+    ptr_test_file = fopen("test.txt", "r");
+    fgets(s2, sizeof(s2), ptr_test_file);
+    printf("%s\n", s2);
+    if (strcmp(s1, s2) == 0)
+    {
+        return true;
+    }
+
+    return false;
+}
+
 

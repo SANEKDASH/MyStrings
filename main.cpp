@@ -20,27 +20,11 @@ static bool TestMyStrncpy();
 static bool TestMyStrcat();
 static bool TestMyStrncat();
 static bool TestMyStrdup();
+static void TestMyStrStr();
+static bool TestMyFgets();
 
 int main()
 {
-    /*fclose(stdin);
-
-    int a = 0;
-
-    assert(scanf("%d", &a) == EOF);
-
-    FILE *ptr_file = fopen("test.txt", "w");
-
-    fwrite("aboba", sizeof(char), sizeof("aboba"), ptr_file);
-
-    fclose(ptr_file);
-
-    stdin = fopen("test.txt", "r");
-
-    char c = (char) getc(stdin);
-
-    printf("%c", c);*/
-
     RUN_TEST(TestMyStrchr);
 
     RUN_TEST(TestMyStrchr);
@@ -57,7 +41,9 @@ int main()
 
     RUN_TEST(TestMyStrdup);
 
-    printf("%s", myStrStr("aboba", "bo"));
+    TestMyStrStr();
+
+    RUN_TEST(TestMyFgets);
 
     return 0;
 }
@@ -77,9 +63,9 @@ static void TestPrint(const char *func_name, bool expr)
 
 static bool TestMyStrchr()
 {
-    char str[] = "aboba";
+    char str[] = "abolaksdj!ba";
 
-    return (strchr(str, 'o') == myStrchr(str, 'o'));
+    return (strchr(str, '!') == myStrchr(str, '!'));
 
 }
 
@@ -130,6 +116,74 @@ static bool TestMyStrdup()
 {
     return (strcmp(myStrdup("Ded Inside"),
                    strdup(  "Ded Inside")) == 0);
+}
+
+static void TestMyStrStr()
+{
+    ColorPrintf(kGold, "#/ TestMyStr:\n{\n");
+
+    if(strstr(  "aboba", "bo") ==
+       myStrStr("aboba", "bo"))
+    {
+        ColorPrintf(kGreen, "\ttest1 : success.\n");
+    }
+    else
+    {
+        ColorPrintf(kRed, "\ttest1 : fault.\n");
+    }
+
+    if(strstr(  "Ded Inside 32@ru", "32") ==
+       myStrStr("Ded Inside 32@ru", "32"))
+    {
+        ColorPrintf(kGreen, "\ttest2 : success.\n");
+    }
+    else
+    {
+        ColorPrintf(kRed, "\ttest2 : fault.\n");
+    }
+
+    if(strstr(  "Ded Inside 31@ru", "32") ==
+       myStrStr("Ded Inside 31@ru", "32"))
+    {
+        ColorPrintf(kGreen, "\ttest3 : success.\n");
+    }
+    else
+    {
+        ColorPrintf(kRed, "\ttest3 : fault.\n");
+    }
+
+    ColorPrintf(kGold, "}\n");
+
+    return;
+}
+
+static bool TestMyFgets()
+{
+    FILE *ptr_test_file = fopen("test.txt", "w");
+
+    char *str = (char *) "askdjaksd 12 123 askjdla";
+
+    char s1[100] = {0};
+    char s2[100] = {0};
+
+    fwrite(str, 1, strlen(str) + 1, ptr_test_file);
+
+    fclose(ptr_test_file);
+    ptr_test_file = fopen("test.txt", "r");
+
+    myFgets(s1, sizeof(s1), ptr_test_file);
+
+    fclose(ptr_test_file);
+    ptr_test_file = fopen("test.txt", "r");
+
+    fgets(s2, sizeof(s2), ptr_test_file);
+
+    if (strcmp(s1, s2) == 0)
+    {
+        return true;
+    }
+
+    return false;
 }
 
 

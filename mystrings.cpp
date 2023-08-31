@@ -60,8 +60,7 @@ char *myStrcpy(char *dest, const char *src )
     for (; *(src + i) != '\0'; ++i)
     {
         CHECK(i < strlen());
-        //*(dest + i) = *(src + i);
-        dest[i] = src[i];
+        *(dest + i) = *(src + i);
     }
 
     *(dest + i) = '\0';
@@ -161,25 +160,22 @@ char *myStrdup(const char *str)
 
 ssize_t myGetline(char **ptr_line, size_t *n, FILE *stream)
 {
-    CHECK(stream);
-    CHECK(ptr_line);
-    CHECK(n);
+    if (ferror(stream) && ptr_line == nullptr && n == nullptr)
+    {
+        return -1;
+    }
 
     if (*ptr_line == nullptr)
     {
-        *ptr_line = (char *) calloc(*n, sizeof(char));  // !!!!???? realloc(nullptr)
+        *ptr_line = (char *) calloc(*n, sizeof(char));
     }
 
     size_t i = 0;
 
     int c = 0;
 
-    while ((c = fgetc(stream)) != '\n' && ptr_line != nullptr)
+    while ((c = fgetc(stream)) != '\n' && c != EOF  && ptr_line != nullptr)
     {
-        if (c == EOF)
-        {
-            return EOF;
-        }
         if (i < *n - 1)
         {
             *(*ptr_line + i) = (char) c;
@@ -196,31 +192,66 @@ ssize_t myGetline(char **ptr_line, size_t *n, FILE *stream)
         }
     }
 
+    if (c == EOF && **ptr_line == '\0')
+    {
+        return -1;
+    }
+
     *(*ptr_line + i) = '\0';
 
     return i;
 }
 
-char *myStrStr(const char *str, const char *substr)
+static void HashFunc(const char *str, int *val, int n);
+
+char *myStrStr(const char *str, const char *pattern)
 {
     CHECK(str);
     CHECK(substr);
 
+    int pattern_len = myStrlen(pattern);
+
+    int str_hash = 0;
+    int pattern_hash = 0;
+
+    HashFunc(pattern, &pattern_hash, pattern_len);
+
+    HashFunc(str, &str_hash, pattern_len - 1);
+
     for (; *str != '\0'; ++str)
     {
-        int j = 0;
+        str_hash += str[pattern_len - 1];
 
-        for (; str[j] != '\0' && str[j] == substr[j]; ++j)
+        if (str_hash == pattern_hash)
         {
-            //do nothing
+            int j = 0;
+
+            for (; j < pattern_len && str[j] != '\0' && str[j] == pattern[j]; ++j)
+            {
+                // do nothing
+            }
+
+            if (pattern[j] == '\0')
+            {
+                return (char *) str;
+            }
         }
 
-        if (substr[j] == '\0')
-        {
-            return (char *) str;
-        }
+        str_hash -= str[0];
     }
 
     return nullptr;
+}
+
+static void HashFunc(const char *str, int *val, int n)
+{
+    *val = 0;
+
+    for (int i = 0; i < n && str[i] != '\0'; ++i)
+    {
+        *val += str[i];
+    }
+
+    return;
 }
 

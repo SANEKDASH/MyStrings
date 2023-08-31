@@ -1,6 +1,6 @@
 #ifndef colorprint
 
-#define colorprint// header guard ?
+#define colorprint
 
 typedef enum
 {
